@@ -231,7 +231,7 @@ boxMix17_mean<- ggplot(Mix17_mean, aes(x=Time, y=Mean ,fill=Treatment,group=Trea
   scale_colour_manual(values = c("#003049","#2a7f62"))+
   labs(x="", y="")+ ylim(0,2.0)+theme_pubclean()+
   theme(legend.title = element_text(size = 24)) +
-  theme(legend.title = element_text(size = 12) ,legend.text = element_text(size = 12))+
+  theme(legend.title = element_text(size = 12) ,legend.text = element_text(size = 12), legend.position = "bottom")+
   theme(axis.text.x=element_text(size=6))+
   annotate("rect",xmin = 7.5, xmax=9.5, ymin = 0, ymax=2.0,alpha=.2, fill="steelblue4")+
   labs(x="Time (hours)", y="Optical density (600nm)")
@@ -313,14 +313,15 @@ mapcom16_mean_tax_mixAA<-all5_mapcom16_mixAA %>%
   summarise(Mean = mean(value))
 
 #Stack bar with mean abundances
+mapcom16_mean_tax_mixAA$Mean <- as.numeric(mapcom16_mean_tax_mixAA$Mean*100)
 stack_mean_mixAA <-ggplot(mapcom16_mean_tax_mixAA, aes(fill =`Family and Genus`, y = Mean, x=Treatment)) +
-  geom_bar(stat = "identity",position = "fill") +
-  ylab("Relative abundance") + 
+  geom_bar(stat = "identity",position = "stack") +
+  ylab("Relative abundance (%)") + 
   xlab("")+
   theme_bw() +
   scale_fill_manual(values =c("#ffc43d","#f95d6a","#d45087","#2f4b7c","#457b9d","lightgrey"), guide = guide_legend(label.theme = element_text(face = "italic", size = 11))) +
-  scale_y_continuous(limits = c(0,1), expand = c(0,0)) +
-  scale_x_discrete()+
+  scale_y_continuous(limits = c(0,100), expand = c(0,0)) +
+  scale_x_discrete(labels = c("Plant miRNAs", "Scramble miRNAs"))+
   theme(axis.text.x = element_text(size = 11, angle = 45, hjust = 1),strip.background = element_rect(fill="white", linewidth = 0, linetype="solid"))+theme(plot.title = element_text(hjust = 0.5))
 stack_mean_mixAA
 
@@ -353,13 +354,13 @@ ASV7Mix$Taxonomy<- "ASV7 \n Citrobacter"
 
 ASV9Mix<-ASVs_interest_df[(ASVs_interest_df$N_Source=="mix_17AA"), c("Dose","Treatment","N_Source","Pair","9")]
 colnames(ASV9Mix)[5] <- "Relative_abundance"  
-ASV9Mix$Taxonomy<- "ASV9 \n Enterobact."
+ASV9Mix$Taxonomy<- "ASV9 \n Enterobacteriaceae"
 
 combined_ASVs <- rbind(ASV5Mix,ASV1Mix,ASV7Mix,ASV9Mix)
 combined_ASVs$N_Taxonomy<-paste(combined_ASVs$N_Source,combined_ASVs$Taxonomy)
 combined_ASVs$N_Source[combined_ASVs$N_Source == 'mix_17AA'] <- 'Mix of 17 amino acids'
 
-boxall<- ggplot(combined_ASVs, aes(x=Treatment, y=Relative_abundance)) +
+boxall<- ggplot(combined_ASVs, aes(x=Treatment, y=100*Relative_abundance)) +
   geom_boxplot(outlier.shape = NA, alpha=0.4, aes(fill=Treatment, color=Treatment )) +
   geom_point(aes(fill=Treatment, color=Treatment),pch = 21, position = position_jitterdodge())+
   theme_light() +
@@ -367,10 +368,10 @@ boxall<- ggplot(combined_ASVs, aes(x=Treatment, y=Relative_abundance)) +
   scale_x_discrete()+
   theme(axis.text.x=element_blank() ,axis.ticks.x = element_blank(),strip.background = element_rect(fill="white", size=0, linetype="solid"))+
   theme(strip.text = element_text(colour = 'grey30', size=10,face = "italic" ))+
-  scale_fill_manual(values = c("#2a7f62","#003049"))+
-  scale_colour_manual(values = c("#2a7f62","#003049"))+
-  labs(x="", y="Relative abundance")+
-  theme(legend.title = element_text(size = 14) ,legend.text = element_text(size=12))
+  scale_fill_manual(values = c("#2a7f62","#003049"), labels = c("Plant miRNAs", "Scramble miRNAs"))+
+  scale_colour_manual(values = c("#2a7f62","#003049"), labels = c("Plant miRNAs", "Scramble miRNAs"))+
+  labs(x="", y="Relative abundance (%)")+
+  theme(legend.title = element_text(size = 14) ,legend.text = element_text(size=12), legend.position = "bottom")
 
 
 #Verifying assmumptions
@@ -395,6 +396,7 @@ stat.test
 #second version
 #Adding the coordinates of the p-values
 stat.test.pos<-stat.test %>% add_xy_position(x="Treatment", group="Taxonomy",fun = "max")
+stat.test.pos$y.position <- c(60, 5, 7.5, 1.1)
 box_sig2<- boxall+stat_pvalue_manual(
   stat.test.pos, hide.ns = TRUE, 
   label = "p.adj.signif",tip.length = 0, size=6)

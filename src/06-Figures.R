@@ -7,13 +7,13 @@ ggsave(fig1, filename = here("output", "figs", "fig1.tiff"), compression = "lzw"
 
 
 #Figure 2 - miRNA are taken up by rhizosphere bacteria
-vario <- readJPEG(source =  here("data", "raw", "20240306_4h_4_BH_Cy5_arrows.jpg")) #Include microscopy images
+vario <- readTIFF(source =  here("data", "raw", "Variovorax_zoom.tiff")) #Include microscopy images
 vario.g <- rasterGrob(vario, interpolate = TRUE)
-bacillus <- readJPEG(source =  here("data", "raw", "20240319_plant_BF_Cy5_31_Bacillus.jpg")) #Include microscopy images
+bacillus <- readTIFF(source =  here("data", "raw", "Bacillus_zoom.tiff")) #Include microscopy images
 bacillus.g <- rasterGrob(bacillus, interpolate = TRUE)
-fig2 <- ggarrange(ara_bact_miRNA_box, ggarrange(vario.g, bacillus.g, labels = c("B", "C"), ncol = 2, font.label = list(size = 18)), nrow=2, labels="A", font.label = list(size = 18))
+fig2 <- ggarrange(ara_bact_miRNA_box, vario.g, bacillus.g, labels = c("A", "B", "C"), ncol = 1, font.label = list(size = 18), nrow=3 )
 fig2
-ggsave(fig2, filename = here("output", "figs", "fig2.tiff"), compression = "lzw", dpi = 600, device = "tiff", height = 14, width = 14, units = "in")
+ggsave(fig2, filename = here("output", "figs", "fig2.tiff"), compression = "lzw", dpi = 600, device = "tiff", height = 14, width = 7, units = "in")
 
 #Figure 3 - miRNA change the bacterial transcriptome
 fig3 <- ggarrange(ggarrange(vario.volcano.20,vario.volcano.120, ncol=2, nrow=1, 
