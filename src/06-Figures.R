@@ -7,10 +7,6 @@ ggsave(fig1, filename = here("output", "figs", "fig1.tiff"), compression = "lzw"
 
 
 #Figure 2 - miRNA are taken up by rhizosphere bacteria
-vario <- readTIFF(source =  here("data", "raw", "Variovorax_zoom.tiff")) #Include microscopy images
-vario.g <- rasterGrob(vario, interpolate = TRUE)
-bacillus <- readTIFF(source =  here("data", "raw", "Bacillus_zoom.tiff")) #Include microscopy images
-bacillus.g <- rasterGrob(bacillus, interpolate = TRUE)
 fig2 <- ggarrange(ara_bact_miRNA_box, vario.g, bacillus.g, labels = c("A", "B", "C"), ncol = 1, font.label = list(size = 18), nrow=3 )
 fig2
 ggsave(fig2, filename = here("output", "figs", "fig2.tiff"), compression = "lzw", dpi = 600, device = "tiff", height = 14, width = 7, units = "in")

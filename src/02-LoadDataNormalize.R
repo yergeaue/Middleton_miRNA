@@ -17,6 +17,12 @@ CAN_ara_norm <-  data.frame(apply(CAN_ara, 1, "/", colSums(CAN_ara))) #104 obs. 
 FR_bra_norm <- data.frame(apply(FR_bra, 1, "/", colSums(FR_bra))) #5 obs. of 524 variables
 FR_ara_norm <- data.frame(apply(FR_ara, 1, "/", colSums(FR_ara))) #35 obs. of 428 variables
 
+#Microscopy images
+vario <- readTIFF(source =  here("data", "raw", "Variovorax_zoom.tiff")) #Variovorax
+vario.g <- rasterGrob(vario, interpolate = TRUE)
+bacillus <- readTIFF(source =  here("data", "raw", "Bacillus_zoom.tiff")) #Bacillus
+bacillus.g <- rasterGrob(bacillus, interpolate = TRUE)
+
 #Transcriptomics
 vario.transcripto <- read.table(file = here("data", "raw", "vario_merged_gene_abundance.tsv"), row.names = 1, header = TRUE)#variovorax 6047 obs of 12 variables
 vario.info <- read.table(file = here("data", "raw", "info-table-vario.csv"), sep= ";", row.names = 1, header = TRUE)#variovorax 12 obs of 1 variables
