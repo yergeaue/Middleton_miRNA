@@ -12,6 +12,9 @@ rowSums(FR_ara_prelim_norm)#sanity check
 colnames(FR_ara_prelim_norm) <- gsub("_.*", "", colnames(FR_ara_prelim_norm))
 FR_ara_prelim_norm <- FR_ara_prelim_norm[3:5,]
 row.names(FR_ara_prelim_norm) <- c("Rep1", "Rep2", "Rep3")
+FR_ara_prelim_norm$ath.miR165a.b <- FR_ara_prelim_norm$ath.miR165a.3p+FR_ara_prelim_norm$ath.miR165a #Merge: have same mature miRNA
+FR_ara_prelim_norm$ath.miR166a.b.c.d.e.f.g <- FR_ara_prelim_norm$ath.miR166f+FR_ara_prelim_norm$ath.miR166g #Merge: have same mature miRNA
+FR_ara_prelim_norm <- FR_ara_prelim_norm[,-c(1,11,15,16)]
 FR_ara_prelim_long <- gather(FR_ara_prelim_norm)#long format for plotting
 colnames(FR_ara_prelim_long) <- c("miRNA", "RelativeAbundance")
 FR_ara_prelim_long <- FR_ara_prelim_long[order(FR_ara_prelim_long$miRNA),]
@@ -37,6 +40,12 @@ rowSums(FR_bra_prelim_norm)#sanity check
 colnames(FR_bra_prelim_norm) <- gsub("_.*", "", colnames(FR_bra_prelim_norm))
 FR_bra_prelim_norm <- FR_bra_prelim_norm[1:2,]
 row.names(FR_bra_prelim_norm) <- c("Rep1", "Rep3")
+FR_bra_prelim_norm$ath.miR165a.b <- FR_ara_prelim_norm$ath.miR165a.3p+FR_ara_prelim_norm$ath.miR165a #Merge: have same mature miRNA
+FR_bra_prelim_norm$bdi.miR166a.b.c.d.i <- FR_bra_prelim_norm[,1]+FR_bra_prelim_norm[,2]+FR_bra_prelim_norm[,4]+FR_bra_prelim_norm[,12]+FR_bra_prelim_norm[,13] #Merge: have same mature miRNA
+FR_bra_prelim_norm$bdi.miR167c.d.e.g <- FR_bra_prelim_norm[,3]+FR_bra_prelim_norm[,5]+FR_bra_prelim_norm[,11]+FR_bra_prelim_norm[,16] #Merge: have same mature miRNA
+FR_bra_prelim_norm$bdi.miR159b.c.d.e.f.g.h.1 <- FR_bra_prelim_norm[,8]
+FR_bra_prelim_norm$bdi.miR396a.b.c.d <- FR_bra_prelim_norm[,15]+FR_bra_prelim_norm[,17]
+FR_bra_prelim_norm <- FR_bra_prelim_norm[,-c(1,2,3,4,5,8,11,12,13,15,16,17)]
 FR_bra_prelim_long <- gather(FR_bra_prelim_norm)#long format for plotting
 colnames(FR_bra_prelim_long) <- c("miRNA", "RelativeAbundance")
 FR_bra_prelim_long <- FR_bra_prelim_long[order(FR_bra_prelim_long$miRNA),]
