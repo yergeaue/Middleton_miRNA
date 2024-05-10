@@ -81,7 +81,7 @@ bra_miRNA_box <- ggplot(FR_bra_prelim_long, aes(x=reorder(miRNA, -RelativeAbunda
 bra_miRNA_box
 
 #Look for overlap
-intersect(gsub("\\..*","",gsub("ath.","", colnames(FR_ara_prelim_norm))), gsub("\\..*","",gsub("bdi.","", colnames(FR_bra_prelim_norm))))
+intersect(colnames(FR_ara_prelim_norm),colnames(FR_bra_prelim_norm))
 
 ##Arabidospis root Canada
 CAN_ara_nitro <- CAN_ara[,colnames(CAN_ara)%in%row.names(CAN_map[(CAN_map$Compartment=="Endosphere" & CAN_map$Nitrogen=="No.Added.Nitrogen" & CAN_map$Plant=="Arabidopsis"),])]
