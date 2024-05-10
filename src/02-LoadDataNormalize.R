@@ -21,14 +21,10 @@ FR_ara_norm <- data.frame(apply(FR_ara, 1, "/", colSums(FR_ara))) #35 obs. of 42
 miRNA.fa <- read.table(file = here("data","raw", "mature.fa"), sep = "\t") #97 770 obs of 1 var.
 miRNA.identity <- miRNA.fa[c(TRUE,FALSE),]
 miRNA.seq <- miRNA.fa[c(FALSE,TRUE),]
-miRNA.df.ara <- data.frame(Identity = grep("Arabidopsis thaliana", miRNA.identity, value = TRUE), 
-                       Sequence = miRNA.seq[grep("Arabidopsis thaliana", miRNA.identity)]) #428 obs of 2 var.
-ara.seq.duplo <- miRNA.df.ara %>% group_by(Sequence) %>% summarise(n=n()) %>% filter(n>1)
-ara.seq.duplo.list <- miRNA.df.ara[miRNA.df.ara$Sequence %in% ara.seq.duplo$Sequence,] #List of mature miRNA with identical seq.
-miRNA.df.bra <- data.frame(Identity = grep("Brachypodium", miRNA.identity, value = TRUE), 
-                           Sequence = miRNA.seq[grep("Brachypodium", miRNA.identity)]) #525 obs of 2 var
-bra.seq.duplo <- miRNA.df.bra %>% group_by(Sequence) %>% summarise(n=n()) %>% filter(n>1)
-bra.seq.duplo.list <- miRNA.df.bra[miRNA.df.bra$Sequence %in% bra.seq.duplo$Sequence,] #List of mature miRNA with identical seq.
+miRNA.df <- data.frame(Identity=miRNA.identity, Sequence=miRNA.seq)
+miRNA.df$Identity <- gsub(">","", miRNA.df$Identity)
+miRNA.df$Identity <- gsub(" MIMAT","_MIMAT",miRNA.df$Identity)
+miRNA.df <- separate(miRNA.df, Identity, into = c("Identity", "Genus", "species", "miRNA"), sep = " ")
 
 #Microscopy images
 vario <- readTIFF(source =  here("data", "raw", "Variovorax_zoom.tiff")) #Variovorax
