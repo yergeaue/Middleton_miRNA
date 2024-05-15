@@ -79,3 +79,7 @@ Jess_ASV_df4<-Jess_ASV_df3[!grepl('Eukaryota', Jess_ASV_df3$taxonomy),]##76 obs 
 Jess_ASV_df_notaxo <- Jess_ASV_df4[,-171]
 Jess_mapping_df<-read.table(file=here("data", "raw","Jess_mapping_file.tsv"), row.names=1, header=T, sep="\t", comment.char = "", check.names = F) #170 obs. 5 variables 
 Jess_mapping_df$Pair<-as.factor(Jess_mapping_df$Pair)
+
+#Flow cytometry
+FACS_df<-read.table(file=here("data","raw","FACS_data_median.tsv"), header=T, sep="\t", comment.char = "", check.names = F) #50 obs. 16 variables
+

@@ -18,4 +18,6 @@ The scripts should be run in order (01 to 06).
 
 **05-Community.R**: Look at the effect of miRNAs on rhizospheric microbial communities: 1) mutant Arabidopsis, 2) Arabidopsis treated with miPEP, 3) simplified soil community confronted with synthetic miRNAs. Figure generation.
 
-**06-Figures.R**: Create multi-panel figures for publication.
+**06-FlowCytometry.R**: Analyse data and create graphs from flow cytometry.
+
+**07-Figures.R**: Create multi-panel figures for publication.

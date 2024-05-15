@@ -24,3 +24,7 @@ fig4 <- ggarrange(mut_StackedBarPlot_phylum_rel, mut.div.plot,
                   box_sig2, ncol = 2, nrow = 3, labels = c("A", "B", "C", "D", "E", "F"))
 fig4
 ggsave(fig4, filename = here("output", "figs", "fig4.tiff"), compression = "lzw", dpi = 600, device = "tiff", height = 14, width = 14, units = "in")
+
+#Fig S2 - Flow cytometry results
+figS2<-ggarrange(box_sig.Pop, box_sig.MFI,nrow=2, labels=(c('A','B')))
+ggsave(figS2, file=here("output","figs", "figS2.tiff"),units="cm", width=14, height=18, compression='lzw' )
