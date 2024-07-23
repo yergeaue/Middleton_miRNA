@@ -54,7 +54,7 @@ mut.phy.map.root.long <- gather(mut.phy.map.root,Phylum,relabund,3:13) #transfor
 
 mut_StackedBarPlot_phylum_rel <- ggplot(mut.phy.map.root.long, aes(x =Type, y = relabund, fill = Phylum)) +
   geom_bar(stat = "summary", fun ="mean", position = "stack") +
-  labs(y = "Relative abundance (%)", x="Genotype") +
+  labs(y = "% of 16S rRNA gene reads", x="Genotype") +
   #facet_grid(~ Compartment, scales = "free", labeller = labeller(Compartment = comp.labs)) +
   scale_y_continuous(limits = c(0,100), expand = c(0,0)) +
   scale_x_discrete(labels=c("ago1-27", "dcl1-2", "hen1-4", "RTL1", "RTL1myc","WT"))+
@@ -65,14 +65,14 @@ mut_StackedBarPlot_phylum_rel
 
 #Anovas
 summary(aov(relabund~Type, data = mut.phy.map.root.long[(mut.phy.map.root.long$Compartment=="RACINE" & mut.phy.map.root.long$Phylum=="Acidobacteria"),])) #F=7.805, P=0.000856***
-summary(aov(relabund~Type, data = mut.phy.map.root.long[(mut.phy.map.root.long$Compartment=="RACINE" & mut.phy.map.root.long$Phylum=="Actinobacteria"),])) #F=3.208, P=0.363*
+summary(aov(relabund~Type, data = mut.phy.map.root.long[(mut.phy.map.root.long$Compartment=="RACINE" & mut.phy.map.root.long$Phylum=="Actinobacteria"),])) #F=3.208, P=0.0363*
 summary(aov(relabund~Type, data = mut.phy.map.root.long[(mut.phy.map.root.long$Compartment=="RACINE" & mut.phy.map.root.long$Phylum=="Bacteroidetes"),])) #NS
 summary(aov(relabund~Type, data = mut.phy.map.root.long[(mut.phy.map.root.long$Compartment=="RACINE" & mut.phy.map.root.long$Phylum=="Chlorobi"),])) #NS
 summary(aov(relabund~Type, data = mut.phy.map.root.long[(mut.phy.map.root.long$Compartment=="RACINE" & mut.phy.map.root.long$Phylum=="Chloroflexi"),])) #F=5.678, P=0.00391**
 summary(aov(relabund~Type, data = mut.phy.map.root.long[(mut.phy.map.root.long$Compartment=="RACINE" & mut.phy.map.root.long$Phylum=="Gemmatimonadetes"),])) #NS
 summary(aov(relabund~Type, data = mut.phy.map.root.long[(mut.phy.map.root.long$Compartment=="RACINE" & mut.phy.map.root.long$Phylum=="Planctomycetes"),])) #F=5.292, P=0.00534**
 summary(aov(relabund~Type, data = mut.phy.map.root.long[(mut.phy.map.root.long$Compartment=="RACINE" & mut.phy.map.root.long$Phylum=="Proteobacteria"),])) #NS
-summary(aov(relabund~Type, data = mut.phy.map.root.long[(mut.phy.map.root.long$Compartment=="RACINE" & mut.phy.map.root.long$Phylum=="Spirochaetae"),])) #F=3.558, P=0.0255
+summary(aov(relabund~Type, data = mut.phy.map.root.long[(mut.phy.map.root.long$Compartment=="RACINE" & mut.phy.map.root.long$Phylum=="Spirochaetae"),])) #F=3.558, P=0.0255*
 summary(aov(relabund~Type, data = mut.phy.map.root.long[(mut.phy.map.root.long$Compartment=="RACINE" & mut.phy.map.root.long$Phylum=="Verrucomicrobia"),])) #F=6.367, P=0.00231**
 #Tukey
 TukeyHSD(aov(relabund~Type, data = mut.phy.map.root.long[(mut.phy.map.root.long$Compartment=="RACINE" & mut.phy.map.root.long$Phylum=="Acidobacteria"),])) 
@@ -159,7 +159,7 @@ miPEP.phy.map.root.long <- gather(miPEP.phy.map.root,Phylum,relabund,5:15) #tran
 
 miPEP_StackedBarPlot_phylum_rel <- ggplot(miPEP.phy.map.root.long, aes(x =Type, y = relabund, fill = Phylum)) +
   geom_bar(stat = "summary", fun ="mean", position = "stack") +
-  labs(y = "Relative abundance (%)", x="Treatment") +
+  labs(y = "% of 16S rRNA gene reads", x="Treatment") +
   #facet_grid(~ Compartment, scales = "free", labeller = labeller(Compartment = comp.labs)) +
   scale_y_continuous(limits = c(0,100), expand = c(0,0)) +
   scale_x_discrete(labels=c("Water", "miPEP-A", "miPEP-B", "miPEP-C"))+
@@ -316,7 +316,7 @@ mapcom16_mean_tax_mixAA<-all5_mapcom16_mixAA %>%
 mapcom16_mean_tax_mixAA$Mean <- as.numeric(mapcom16_mean_tax_mixAA$Mean*100)
 stack_mean_mixAA <-ggplot(mapcom16_mean_tax_mixAA, aes(fill =`Family and Genus`, y = Mean, x=Treatment)) +
   geom_bar(stat = "identity",position = "stack") +
-  ylab("Relative abundance (%)") + 
+  ylab("% of 16S rRNA gene reads") + 
   xlab("")+
   theme_bw() +
   scale_fill_manual(values =c("#ffc43d","#f95d6a","#d45087","#2f4b7c","#457b9d","lightgrey"), guide = guide_legend(label.theme = element_text(face = "italic", size = 11))) +
@@ -370,7 +370,7 @@ boxall<- ggplot(combined_ASVs, aes(x=Treatment, y=100*Relative_abundance)) +
   theme(strip.text = element_text(colour = 'grey30', size=10,face = "italic" ))+
   scale_fill_manual(values = c("#2a7f62","#003049"), labels = c("Plant miRNAs", "Scramble miRNAs"))+
   scale_colour_manual(values = c("#2a7f62","#003049"), labels = c("Plant miRNAs", "Scramble miRNAs"))+
-  labs(x="", y="Relative abundance (%)")+
+  labs(x="", y="% of 16S rRNA gene reads")+
   theme(legend.title = element_text(size = 14) ,legend.text = element_text(size=12), legend.position = "bottom")
 
 
@@ -401,3 +401,31 @@ box_sig2<- boxall+stat_pvalue_manual(
   stat.test.pos, hide.ns = TRUE, 
   label = "p.adj.signif",tip.length = 0, size=6)
 box_sig2
+
+#t-tests paired
+t.test(all5_mapcom16_mixAA[all5_mapcom16_mixAA$`Family and Genus`=="Enterobacteriaceae Citrobacter" & all5_mapcom16_mixAA$Treatment=="plant",3],
+       all5_mapcom16_mixAA[all5_mapcom16_mixAA$`Family and Genus`=="Enterobacteriaceae Citrobacter" & all5_mapcom16_mixAA$Treatment=="scramble",3],
+       paired = T)
+#t = -5.6354, df = 4, p-value = 0.00488
+t.test(all5_mapcom16_mixAA[all5_mapcom16_mixAA$`Family and Genus`=="Enterobacteriaceae Enterobacter" & all5_mapcom16_mixAA$Treatment=="plant",3],
+       all5_mapcom16_mixAA[all5_mapcom16_mixAA$`Family and Genus`=="Enterobacteriaceae Enterobacter" & all5_mapcom16_mixAA$Treatment=="scramble",3],
+       paired = T)
+#t = -4.4303, df = 4, p-value = 0.01142
+t.test(all5_mapcom16_mixAA[all5_mapcom16_mixAA$`Family and Genus`=="Enterobacteriaceae Raoultella" & all5_mapcom16_mixAA$Treatment=="plant",3],
+       all5_mapcom16_mixAA[all5_mapcom16_mixAA$`Family and Genus`=="Enterobacteriaceae Raoultella" & all5_mapcom16_mixAA$Treatment=="scramble",3],
+       paired = T)
+#t = -0.15516, df = 4, p-value = 0.8842
+t.test(all5_mapcom16_mixAA[all5_mapcom16_mixAA$`Family and Genus`=="Moraxellaceae Acinetobacter" & all5_mapcom16_mixAA$Treatment=="plant",3],
+       all5_mapcom16_mixAA[all5_mapcom16_mixAA$`Family and Genus`=="Moraxellaceae Acinetobacter" & all5_mapcom16_mixAA$Treatment=="scramble",3],
+       paired = T)
+#t = 5.1677, df = 4, p-value = 0.006662
+t.test(all5_mapcom16_mixAA[all5_mapcom16_mixAA$`Family and Genus`=="Pseudomonadaceae Pseudomonas" & all5_mapcom16_mixAA$Treatment=="plant",3],
+       all5_mapcom16_mixAA[all5_mapcom16_mixAA$`Family and Genus`=="Pseudomonadaceae Pseudomonas" & all5_mapcom16_mixAA$Treatment=="scramble",3],
+       paired = T)
+#t = 1.8174, df = 14, p-value = 0.09061
+
+#Permanova
+#subset to all5 and mix17AA
+com16_all5_mix <- com16_rel_map[com16_rel_map$N_Source=="mix_17AA" & com16_rel_map$miRNA=="all5",]
+set.seed(67889)
+adonis2(com16_all5_mix[,7:50]~com16_all5_mix$Treatment+com16_all5_mix$Pair) #R2=0.39379, F=6.4150, P=0.006

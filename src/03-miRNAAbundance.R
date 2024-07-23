@@ -31,10 +31,10 @@ FR_ara_prelim_long$miRNA <- gsub("miR166a-3p;miR166b-3p;miR166c;miR166d;miR166e-
 FR_ara_prelim_long$miRNA <- gsub("miR165a-3p;miR165b", "miR165a,b", FR_ara_prelim_long$miRNA)
 
 #Plot
-ara_miRNA_box <- ggplot(FR_ara_prelim_long, aes(x=reorder(miRNA, -RelativeAbundance), y=RelativeAbundance))+
+ara_miRNA_box <- ggplot(FR_ara_prelim_long, aes(x=reorder(miRNA, -RelativeAbundance), y=100*RelativeAbundance))+
               geom_boxplot()+
               theme_bw()+
-              ylab("Relative abundance")+
+              ylab("% of Arabidopsis reads")+
               xlab("")+
               theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
 ara_miRNA_box
@@ -72,10 +72,10 @@ FR_bra_prelim_long$miRNA <- gsub("miR396a-5p;miR396b-5p", "miR396a,b", FR_bra_pr
 FR_bra_prelim_long <- FR_bra_prelim_long[order(FR_bra_prelim_long$miRNA),]
 
 #Plot
-bra_miRNA_box <- ggplot(FR_bra_prelim_long, aes(x=reorder(miRNA, -RelativeAbundance), y=RelativeAbundance))+
+bra_miRNA_box <- ggplot(FR_bra_prelim_long, aes(x=reorder(miRNA, -RelativeAbundance), y=100*RelativeAbundance))+
   geom_boxplot()+
   theme_bw()+
-  ylab("Relative abundance")+
+  ylab("% of Brachypodium reads")+
   xlab("")+
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
 bra_miRNA_box
@@ -114,10 +114,10 @@ CAN_ara_nitro_long$miRNA <- gsub("miR168a-5p;miR168b-5p", "miR168a,b", CAN_ara_n
 CAN_ara_nitro_long <- CAN_ara_nitro_long[order(CAN_ara_nitro_long$miRNA),]
 
 #Plot 
-root_ara_miRNA_box <- ggplot(CAN_ara_nitro_long, aes(x=reorder(miRNA, -RelativeAbundance), y=RelativeAbundance))+
+root_ara_miRNA_box <- ggplot(CAN_ara_nitro_long, aes(x=reorder(miRNA, -RelativeAbundance), y=100*RelativeAbundance))+
   geom_boxplot()+
   theme_bw()+
-  ylab("Relative abundance")+
+  ylab("% of Arabidopsis reads")+
   xlab("")+
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
 root_ara_miRNA_box
@@ -154,10 +154,10 @@ FR_ara_bact_long$miRNA <- gsub("miR162a-3p;miR162b-3p", "miR162a,b", FR_ara_bact
 FR_ara_bact_long <- FR_ara_bact_long[order(FR_ara_bact_long$miRNA),]
 
 #Plot
-ara_bact_miRNA_box <- ggplot(FR_ara_bact_long, aes(x=reorder(miRNA, -RelativeAbundance), y=RelativeAbundance))+
+ara_bact_miRNA_box <- ggplot(FR_ara_bact_long, aes(x=reorder(miRNA, -RelativeAbundance), y=100*RelativeAbundance))+
   geom_boxplot()+
   theme_bw()+
-  ylab("Relative abundance")+
+  ylab("% of Arabidopsis reads")+
   xlab("")+
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
 ara_bact_miRNA_box

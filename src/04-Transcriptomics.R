@@ -21,7 +21,7 @@ sample_dds.vario <- DESeq(sample_dds.vario)
 # Comparing difference between Type A and Type B (as defined in InfoTable)
 
 #20 min
-sample_res.20 <- results(sample_dds, contrast = c("Type", "mir20", "scrb20")) #last charact vect = base level
+sample_res.20 <- results(sample_dds.vario, contrast = c("Type", "mir20", "scrb20")) #last charact vect = base level
 summary(sample_res.20)
 # Save the results to a table
 res.20 <- data.frame(sample_res.20)
@@ -36,7 +36,7 @@ significant_results.20 <- res_gene.20[which(res_gene.20$padj < padj.cutoff),]
 write.table(significant_results.20, file = here("output", "tables", "sign-pajd-20min-vario.txt"))
 
 #120min
-sample_res.120 <- results(sample_dds, contrast = c("Type", "mir120", "scrb120")) 
+sample_res.120 <- results(sample_dds.vario, contrast = c("Type", "mir120", "scrb120")) 
 summary(sample_res.120)
 plotMA(sample_res.120, ylim=c(-6,6), colSig="#d01c8b", colLine="black", cex=1)
 # Save the results to a table
@@ -133,6 +133,7 @@ qpcr.plot <- ggplot(qpcr.long[qpcr.long$Treatment!="scrambled",],aes(x =Treatmen
   geom_boxplot() +
   geom_point() +
   theme_bw() +
+  ylab("Relative expression ratio")+
   facet_wrap(~Gene, nrow = 2, ncol =2, scales = "free_y", labeller = labeller(Gene = gene.labs))
 
 qpcr.plot
