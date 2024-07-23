@@ -428,4 +428,4 @@ t.test(all5_mapcom16_mixAA[all5_mapcom16_mixAA$`Family and Genus`=="Pseudomonada
 #subset to all5 and mix17AA
 com16_all5_mix <- com16_rel_map[com16_rel_map$N_Source=="mix_17AA" & com16_rel_map$miRNA=="all5",]
 set.seed(67889)
-adonis2(com16_all5_mix[,7:50]~com16_all5_mix$Treatment+com16_all5_mix$Pair) #R2=0.39379, F=6.4150, P=0.006
+adonis2(com16_all5_mix[,7:50]~com16_all5_mix$Treatment+com16_all5_mix$Pair) #R2=0.39379, F=6.4150, P=0.003
