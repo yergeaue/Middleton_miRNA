@@ -33,3 +33,4 @@ ggsave(fig4, filename = here("output", "figs", "fig4.pdf"), dpi = 600, device = 
 #Fig S2 - Flow cytometry results
 figS2<-ggarrange(box_sig.Pop, box_sig.MFI,nrow=2, labels=(c('A','B')))
 ggsave(figS2, file=here("output","figs", "figS2.tiff"),units="cm", width=14, height=18, compression='lzw' )
+ggsave(figS2, file=here("output","figs", "figS2.pdf"),units="cm", width=14, height=18)
