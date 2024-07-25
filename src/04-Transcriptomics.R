@@ -133,6 +133,7 @@ qpcr.plot <- ggplot(qpcr.long[qpcr.long$Treatment!="scrambled",],aes(x =Treatmen
   geom_boxplot() +
   geom_point() +
   theme_bw() +
+  theme(strip.text = element_text(size = 8))+
   ylab("Relative expression ratio")+
   facet_wrap(~Gene, nrow = 2, ncol =2, scales = "free_y", labeller = labeller(Gene = gene.labs))
 
