@@ -54,7 +54,7 @@ mut.phy.map.root.long <- gather(mut.phy.map.root,Phylum,relabund,3:13) #transfor
 
 mut_StackedBarPlot_phylum_rel <- ggplot(mut.phy.map.root.long, aes(x =Type, y = relabund, fill = Phylum)) +
   geom_bar(stat = "summary", fun ="mean", position = "stack") +
-  labs(y = "% of 16S rRNA gene reads", x="Genotype") +
+  labs(y = "Proportion of 16S rRNA gene reads (%)", x="Genotype") +
   #facet_grid(~ Compartment, scales = "free", labeller = labeller(Compartment = comp.labs)) +
   scale_y_continuous(limits = c(0,100), expand = c(0,0)) +
   scale_x_discrete(labels=c("ago1-27", "dcl1-2", "hen1-4", "RTL1", "RTL1myc","WT"))+
@@ -113,7 +113,7 @@ mut.alpha.tukey <- data.frame(letters = c("a", "a", "ab", "ab", "a", "b"), x = c
 #Plot
 mut.alpha.map <- cbind(mut.map.root.s, mut.alpha_roots)
 mut.div.plot <- ggplot(mut.alpha.map,aes(x =Type, y = Shannon))+
-  labs(x="Genotype", y="Shannon diversity")+
+  labs(x="Genotype", y="Shannon index")+
   geom_boxplot() +
   geom_point() +
   geom_text(data = mut.alpha.tukey, aes(x=x, y=y, label = letters))+ #Add letters from tukey
@@ -159,7 +159,7 @@ miPEP.phy.map.root.long <- gather(miPEP.phy.map.root,Phylum,relabund,5:15) #tran
 
 miPEP_StackedBarPlot_phylum_rel <- ggplot(miPEP.phy.map.root.long, aes(x =Type, y = relabund, fill = Phylum)) +
   geom_bar(stat = "summary", fun ="mean", position = "stack") +
-  labs(y = "% of 16S rRNA gene reads", x="Treatment") +
+  labs(y = "Proportion of 16S rRNA gene reads (%)", x="Treatment") +
   #facet_grid(~ Compartment, scales = "free", labeller = labeller(Compartment = comp.labs)) +
   scale_y_continuous(limits = c(0,100), expand = c(0,0)) +
   scale_x_discrete(labels=c("Water", "miPEP-A", "miPEP-B", "miPEP-C"))+
@@ -316,7 +316,7 @@ mapcom16_mean_tax_mixAA<-all5_mapcom16_mixAA %>%
 mapcom16_mean_tax_mixAA$Mean <- as.numeric(mapcom16_mean_tax_mixAA$Mean*100)
 stack_mean_mixAA <-ggplot(mapcom16_mean_tax_mixAA, aes(fill =`Family and Genus`, y = Mean, x=Treatment)) +
   geom_bar(stat = "identity",position = "stack") +
-  ylab("% of 16S rRNA gene reads") + 
+  ylab("Proportion of 16S rRNA gene reads (%)") + 
   xlab("")+
   theme_bw() +
   scale_fill_manual(values =c("#ffc43d","#f95d6a","#d45087","#2f4b7c","#457b9d","lightgrey"), guide = guide_legend(label.theme = element_text(face = "italic", size = 11))) +
@@ -370,7 +370,7 @@ boxall<- ggplot(combined_ASVs, aes(x=Treatment, y=100*Relative_abundance)) +
   theme(strip.text = element_text(colour = 'grey30', size=10,face = "italic" ))+
   scale_fill_manual(values = c("#2a7f62","#003049"), labels = c("Plant miRNAs", "Scramble miRNAs"))+
   scale_colour_manual(values = c("#2a7f62","#003049"), labels = c("Plant miRNAs", "Scramble miRNAs"))+
-  labs(x="", y="% of 16S rRNA gene reads")+
+  labs(x="", y="Proportion of 16S rRNA gene reads (%)")+
   theme(legend.title = element_text(size = 14) ,legend.text = element_text(size=12), legend.position = "bottom")
 
 

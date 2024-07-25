@@ -34,9 +34,9 @@ FR_ara_prelim_long$miRNA <- gsub("miR165a-3p;miR165b", "miR165a,b", FR_ara_preli
 ara_miRNA_box <- ggplot(FR_ara_prelim_long, aes(x=reorder(miRNA, -RelativeAbundance), y=100*RelativeAbundance))+
               geom_boxplot()+
               theme_bw()+
-              ylab("% of Arabidopsis reads")+
+              ylab("Proportion of Arabidopsis reads (%)")+
               xlab("")+
-              theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+              theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1),axis.title.y =  element_text(size=8))
 ara_miRNA_box
 
 ##Brachypodium-FR-Rhizosphere
@@ -75,9 +75,9 @@ FR_bra_prelim_long <- FR_bra_prelim_long[order(FR_bra_prelim_long$miRNA),]
 bra_miRNA_box <- ggplot(FR_bra_prelim_long, aes(x=reorder(miRNA, -RelativeAbundance), y=100*RelativeAbundance))+
   geom_boxplot()+
   theme_bw()+
-  ylab("% of Brachypodium reads")+
+  ylab("Proportion of Brachypodium reads (%)")+
   xlab("")+
-  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1),axis.title.y =  element_text(size=8))
 bra_miRNA_box
 
 #Look for overlap
@@ -117,9 +117,9 @@ CAN_ara_nitro_long <- CAN_ara_nitro_long[order(CAN_ara_nitro_long$miRNA),]
 root_ara_miRNA_box <- ggplot(CAN_ara_nitro_long, aes(x=reorder(miRNA, -RelativeAbundance), y=100*RelativeAbundance))+
   geom_boxplot()+
   theme_bw()+
-  ylab("% of Arabidopsis reads")+
+  ylab("Proportion of Arabidopsis reads (%)")+
   xlab("")+
-  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1),axis.title.y =  element_text(size=8))
 root_ara_miRNA_box
 
 #Look for overlap
@@ -157,7 +157,7 @@ FR_ara_bact_long <- FR_ara_bact_long[order(FR_ara_bact_long$miRNA),]
 ara_bact_miRNA_box <- ggplot(FR_ara_bact_long, aes(x=reorder(miRNA, -RelativeAbundance), y=100*RelativeAbundance))+
   geom_boxplot()+
   theme_bw()+
-  ylab("% of Arabidopsis reads")+
+  ylab("Proportion of Arabidopsis reads (%)")+
   xlab("")+
-  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1), axis.title.y =  element_text(size=8))
 ara_bact_miRNA_box
