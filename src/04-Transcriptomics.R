@@ -57,6 +57,7 @@ vario.volcano.20 <- EnhancedVolcano(res.20, lab = row.names(res.20), selectLab =
                 x = 'log2FoldChange', y = 'padj',
                 pCutoff = 0.05, FCcutoff = 1.5, 
                 pointSize =3, labSize = 4, legendPosition = "bottom",
+                xlab = bquote(~Log[2] ~ "fold change (Plant vs. Scrambled miRNAs)"),
                 title = "", subtitle = "", ylim = c( -log10(6.5)))
 vario.volcano.20
 
@@ -64,6 +65,7 @@ vario.volcano.120 <- EnhancedVolcano(res.120, lab = row.names(res.120), selectLa
                                     x = 'log2FoldChange', y = 'padj',
                                     pCutoff = 0.05, FCcutoff = 1.5, 
                                     pointSize =3, labSize = 4, legendPosition = "bottom",
+                                    xlab = bquote(~Log[2] ~ "fold change (Plant vs. Scrambled miRNAs)"),
                                     title = "", subtitle = "", ylim = c( -log10(4)))
 vario.volcano.120
 
@@ -129,15 +131,7 @@ qpcr.long$Treatment <- factor(qpcr.long$Treatment, c("water", "miPEP", "scramble
 gene.labs <- c("pri-miR159c", "Alpha-2-macroglobulin","CdsA", "LysR")
 names(gene.labs) <- c("pri.miR159c",  "alpha.2.macroglobulin", "Phosphatidate.cytidylyltransferase","LysR")
 
-qpcr.plot <- ggplot(qpcr.long[qpcr.long$Treatment!="scrambled",],aes(x =Treatment, y = Ratio))+
-  geom_boxplot() +
-  geom_point() +
-  theme_bw() +
-  theme(strip.text = element_text(size = 8))+
-  ylab("Relative expression ratio")+
-  facet_wrap(~Gene, nrow = 2, ncol =2, scales = "free_y", labeller = labeller(Gene = gene.labs))
 
-qpcr.plot
 
 ###### Statistical analysis ######
 shapiro.test(qpcr.long[qpcr.long$Gene=="pri.miR159c",3]) #P=0.2269
@@ -164,3 +158,45 @@ t.test(qpcr.long[qpcr.long$Gene=="alpha.2.macroglobulin" & qpcr.long$Treatment==
        qpcr.long[qpcr.long$Gene=="alpha.2.macroglobulin" & qpcr.long$Treatment=="scrambled",3]) #t=0.17628, P=0.8634
 t.test(log(qpcr.long[qpcr.long$Gene=="LysR" & qpcr.long$Treatment=="water",3]), 
        log(qpcr.long[qpcr.long$Gene=="LysR" & qpcr.long$Treatment=="scrambled",3])) #t=0.17075, P=0.8676
+
+#T-test between miPEP and scrambled
+t.test(qpcr.long[qpcr.long$Gene=="pri.miR159c" & qpcr.long$Treatment=="miPEP",3], 
+       qpcr.long[qpcr.long$Gene=="pri.miR159c" & qpcr.long$Treatment=="scrambled",3]) #t=-0.3.3296, P=0.009291
+t.test(log(qpcr.long[qpcr.long$Gene=="Phosphatidate.cytidylyltransferase" & qpcr.long$Treatment=="miPEP",3]), 
+       log(qpcr.long[qpcr.long$Gene=="Phosphatidate.cytidylyltransferase" & qpcr.long$Treatment=="scrambled",3])) #t=-0.93377, P=0.3795
+t.test(qpcr.long[qpcr.long$Gene=="alpha.2.macroglobulin" & qpcr.long$Treatment=="miPEP",3], 
+       qpcr.long[qpcr.long$Gene=="alpha.2.macroglobulin" & qpcr.long$Treatment=="scrambled",3]) #t=2.1796, P=0.05196
+t.test(log(qpcr.long[qpcr.long$Gene=="LysR" & qpcr.long$Treatment=="miPEP",3]), 
+       log(qpcr.long[qpcr.long$Gene=="LysR" & qpcr.long$Treatment=="scrambled",3])) #t=-3.0596, P=0.01954
+
+#Create object for stat_pvalue_manual - but use results from above tests (with log transformation)
+stat.test.qpcr <- qpcr.long %>%
+  group_by(Gene) %>%
+  t_test(Ratio ~ Treatment)%>%
+  adjust_pvalue(method="holm")%>%
+  add_significance("p")
+stat.test.qpcr
+#Adding the coordinates of the p-values
+stat.test.qpcr.pos<-stat.test.qpcr %>% add_xy_position(x="Treatment", dodge = 0, group="Gene", fun="max" )
+#Make coherent with t-tests
+stat.test.qpcr.pos$p <- c(0.0145, 0.7167, 0.009291, 0.006474, 0.524, 0.3795, 
+                          0.04261, 0.8634, 0.05196, 0.005365, 0.8676, 0.01954)
+stat.test.qpcr.pos$p.signif <- c("*", "ns", "**", "**", "ns", "ns", 
+                                 "*", "ns", "0.052", "**", "ns", "*")
+
+#Plot
+qpcr.plot <- ggplot(qpcr.long,aes(x =Treatment, y = Ratio))+
+  geom_boxplot(outlier.shape = NA, alpha=0.4, aes(fill=Treatment, color=Treatment)) +
+  geom_point(aes(fill=Treatment, color=Treatment),pch = 21, position = position_jitterdodge()) +
+  theme_bw() +
+  theme(strip.text = element_text(size = 8), legend.position = "null", axis.text.x = element_text(size=8), plot.margin = )+
+  ylab("Relative expression ratio")+
+  facet_wrap(~Gene, nrow = 2, ncol =2, scales = "free_y", labeller = labeller(Gene = gene.labs))+
+  scale_y_continuous(expand = c(0,0.25)) +
+  scale_x_discrete(labels = c("Water", "miPEP159c", "Scrambled miPEP"))+
+  scale_fill_manual(values = c("#8A817C", "#2a7f62","#003049"))+
+  scale_colour_manual(values = c("#8A817C", "#2a7f62","#003049"))+
+  stat_pvalue_manual(data = stat.test.qpcr.pos,
+    hide.ns = FALSE, 
+    label = "p.signif",tip.length = 0.02, size=4)
+qpcr.plot

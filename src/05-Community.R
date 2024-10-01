@@ -28,7 +28,7 @@ correct.order <- c( "ago1-27", "dcl1-2", "hen1-4", "RTL1", "RTL1myc","WT","Unpla
 sample_data(mut.phylo_filtered)$Type <- factor(sample_data(mut.phylo_filtered)$Type, levels = correct.order)
 
 #Roots/rhizoplane only
-mut.phylo_roots <- subset_samples(mut.phylo_filtered, Compartment=="RACINE")
+mut.phylo_roots <- subset_samples(mut.phylo_filtered, Compartment=="RACINE" | Compartment == "RACIN" | Type == "Unplanted_soil")
 
 #Plot abundances, top 10 phyla in all samples
 mut.pseq_roots <- mut.phylo_roots %>% aggregate_taxa(level = "Phylum")
@@ -44,22 +44,25 @@ rowSums(mut_phylum_relabun_top10)#Sanity check; 100 all over
 
 #Add mapping file info
 mut.map.s <- mut.map[order(row.names(mut.map)),]#Sort mapping file
-mut.map.root.s <- mut.map.s[mut.map.s$Compartment=="RACINE",]
-mut.map.root.s <- mut.map.root.s[-(20:21),] #Two samples that were removed from the OTU table
+mut.map.root.s <- mut.map.s[mut.map.s$Compartment=="RACINE"|mut.map.s$Compartment=="RACIN"|mut.map.s$Type=="Unplanted_soil",]
+mut.map.root.s <- mut.map.root.s[-(25:26),] #Two samples that were removed from the OTU table
 mut_phylum_relabun_top10.s <- mut_phylum_relabun_top10[order(row.names(mut_phylum_relabun_top10)),] #Sort Phylum table
 row.names(mut_phylum_relabun_top10.s)==row.names(mut.map.root.s)#Sanity check - all TRUE
 mut.phy.map.root <- data.frame(mut.map.root.s,mut_phylum_relabun_top10.s)#Merge
 rowSums(mut.phy.map.root[,3:13]) #Should be all 100s
 mut.phy.map.root.long <- gather(mut.phy.map.root,Phylum,relabund,3:13) #transform in long format for ggplot
+mut.phy.map.root.long$Type <- factor(mut.phy.map.root.long$Type, 
+                                     c("ago1-27", "dcl1-2", "hen1-4", "RTL1", 
+                                       "RTL1myc","WT", "Unplanted_soil"))#Put in right order
 
 mut_StackedBarPlot_phylum_rel <- ggplot(mut.phy.map.root.long, aes(x =Type, y = relabund, fill = Phylum)) +
   geom_bar(stat = "summary", fun ="mean", position = "stack") +
   labs(y = "Proportion of 16S rRNA gene reads (%)", x="Genotype") +
   #facet_grid(~ Compartment, scales = "free", labeller = labeller(Compartment = comp.labs)) +
   scale_y_continuous(limits = c(0,100), expand = c(0,0)) +
-  scale_x_discrete(labels=c("ago1-27", "dcl1-2", "hen1-4", "RTL1", "RTL1myc","WT"))+
+  scale_x_discrete(labels=c("ago1-27", "dcl1-2", "hen1-4", "RTL1", "RTL1myc","WT", "Unplanted"))+
   theme_bw()+
-  scale_fill_manual(values = c("#264653", "#F4A261", "#E56B6F", "#62929E", "#5B8E7D","#8EA8C3", "#BCB8B1","#30AB65","#FFC857","#BDD9BF","#F9844A"))
+  scale_fill_manual(values = c("#FFC857", "#F4A261", "#E56B6F", "#62929E", "#5B8E7D","#8EA8C3", "#BCB8B1","#30AB65","#264653","#BDD9BF","#F9844A"))
 
 mut_StackedBarPlot_phylum_rel
 
@@ -85,10 +88,10 @@ TukeyHSD(aov(relabund~Type, data = mut.phy.map.root.long[(mut.phy.map.root.long$
 #Permanova
 row.names(mut.map.root.s) == colnames(mut.phylo_roots@otu_table)#Order is ok
 set.seed(22345)
-adonis2(data.frame(t(mut.phylo_roots@otu_table))~Type, data = data.frame(mut.map.root.s), method = "bray") #F=3.3386, P=0.001***
+adonis2(data.frame(t(mut.phylo_roots@otu_table))[mut.map.root.s$Compartment=="RACINE",]~Type, data = data.frame(mut.map.root.s[mut.map.root.s$Compartment=="RACINE",]), method = "bray") #F=3.3386, P=0.001***
 #Pairwise adonis
 set.seed(9456)
-pairwise.adonis2(data.frame(t(mut.phylo_roots@otu_table))~Type, data = data.frame(mut.map.root.s), method = "bray")
+pairwise.adonis2(data.frame(t(mut.phylo_roots@otu_table))[mut.map.root.s$Compartment=="RACINE",]~Type, data = data.frame(mut.map.root.s[mut.map.root.s$Compartment=="RACINE",]), method = "bray")
 #Ago-hen, ago-RTL1, hen-RTL1myc, RTL1-RTL1myc, (WT all nearly... but 2 reps so not significant)
 
 ##Alpha diversity
@@ -100,24 +103,30 @@ mut.alpha_roots <- estimate_richness(mut.phylo_rar_roots, measures=c("Shannon"))
 row.names(mut.alpha_roots)==row.names(mut.map.root.s)#Already in the right order
 
 # Test normality
-shapiro.test(mut.alpha_roots$Shannon) #W = 0.96111, p-value = 0.5388
+shapiro.test(mut.alpha_roots$Shannon) #W = 0.96474, p-value = 0.4933
 #Anova
-summary(aov(Shannon~mut.map.root.s$Type, data = mut.alpha_roots)) #F=4.246, P=0.0132
-TukeyHSD(aov(Shannon~mut.map.root.s$Type, data = mut.alpha_roots)) 
-# ago dcl hen RTL RTLmyc  WT
-#  a  a   ab  ab  a       b
+summary(aov(mut.alpha_roots$Shannon~mut.map.root.s$Type)) #F=5.133, P=0.00275
+TukeyHSD(aov(mut.alpha_roots$Shannon~mut.map.root.s$Type)) 
+# ago dcl hen RTL RTLmyc  WT unplanted 
+#  a  a   ab  ab  a       b   a
 #Tukey letters - for plot
-mut.alpha.tukey <- data.frame(letters = c("a", "a", "ab", "ab", "a", "b"), x = c(1,2,3,4,5,6), y=c(5.4, 5.7, 5.4, 5.4, 5.55, 4.8))
-
+mut.alpha.tukey <- data.frame(letters = c("a", "a", "ab", "ab", "a", "b", "a"), x = c(1,2,3,4,5,6,7), y=c(5.4, 5.7, 5.4, 5.4, 5.55, 4.8, 5.7))
 
 #Plot
 mut.alpha.map <- cbind(mut.map.root.s, mut.alpha_roots)
+mut.alpha.map$Type <- factor(mut.alpha.map$Type, 
+                                     c("ago1-27", "dcl1-2", "hen1-4", "RTL1", 
+                                       "RTL1myc","WT", "Unplanted_soil"))#Put in right order
 mut.div.plot <- ggplot(mut.alpha.map,aes(x =Type, y = Shannon))+
   labs(x="Genotype", y="Shannon index")+
-  geom_boxplot() +
-  geom_point() +
+  geom_boxplot(aes(fill="", color=""), outlier.shape = NA, alpha=0.4) +
+  geom_point(aes(fill="", color=""),pch = 21, position = position_jitterdodge()) +
   geom_text(data = mut.alpha.tukey, aes(x=x, y=y, label = letters))+ #Add letters from tukey
-  theme_bw() 
+  scale_x_discrete(labels=c("ago1-27", "dcl1-2", "hen1-4", "RTL1", "RTL1myc","WT", "Unplanted"))+
+  scale_fill_manual(values = c("#003049"))+
+  scale_colour_manual(values = c("#003049"))+
+  theme_bw()+
+  theme(legend.position = "none")
 mut.div.plot
 
 
@@ -164,7 +173,7 @@ miPEP_StackedBarPlot_phylum_rel <- ggplot(miPEP.phy.map.root.long, aes(x =Type, 
   scale_y_continuous(limits = c(0,100), expand = c(0,0)) +
   scale_x_discrete(labels=c("Water", "miPEP-A", "miPEP-B", "miPEP-C"))+
   theme_bw()+
-  scale_fill_manual(values = c("#264653", "#F4A261", "#E56B6F","#5B8E7D","#04395E","#25A18E","#8EA8C3" ,"#BCB8B1","#30AB65","#FFC857","#F9844A"))
+  scale_fill_manual(values = c("#FFC857", "#F4A261", "#E56B6F","#5B8E7D","#04395E","#25A18E","#8EA8C3" ,"#BCB8B1","#30AB65","#264653","#F9844A"))
 
 miPEP_StackedBarPlot_phylum_rel
 
@@ -395,11 +404,11 @@ stat.test
 
 #second version
 #Adding the coordinates of the p-values
-stat.test.pos<-stat.test %>% add_xy_position(x="Treatment", group="Taxonomy",fun = "max")
+stat.test.pos<-stat.test %>% add_xy_position(x="Treatment", group="Taxonomy",fun = "max", dodge = 0)
 stat.test.pos$y.position <- c(60, 5, 7.5, 1.1)
 box_sig2<- boxall+stat_pvalue_manual(
   stat.test.pos, hide.ns = TRUE, 
-  label = "p.adj.signif",tip.length = 0, size=6)
+  label = "p.adj.signif",tip.length = 0.02, size=6)
 box_sig2
 
 #t-tests paired
